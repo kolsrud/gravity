@@ -32,7 +32,8 @@ namespace Gravity.Universe
             moon5.SetVelocity(1322, Math.PI / 2);
 
             Planets.AddRange(new[] {earth});
-            Planets.AddRange(new []{moon, moon2, moon3, moon4});
+            Planets.AddRange(new[] {moon});
+            Planets.AddRange(new []{moon2, moon3, moon4});
         }
 
         public double Step(int timeScale)
@@ -63,6 +64,8 @@ namespace Gravity.Universe
         public Position Position;
         public double VelocityX = 0;
         public double VelocityY = 0;
+        public double AccelerationX = 0;
+        public double AccelerationY = 0;
 
         internal MovingBody(Position position)
         {
@@ -83,19 +86,21 @@ namespace Gravity.Universe
 
         public double Accelerate(int timeScale, List<(Position Position, double Mass)> gravityWells)
         {
-            return gravityWells.Where(well => well.Position != Position).Select(well => Accelerate(timeScale, well)).Min();
+            AccelerationX = 0;
+            AccelerationY = 0;
+            var minDistance = gravityWells.Where(well => well.Position != Position).Select(Accelerate).Min();
+            VelocityX += AccelerationX * timeScale;
+            VelocityY += AccelerationY * timeScale;
+            return minDistance;
         }
 
-        private double Accelerate(int timeScale, (Position Position, double Mass) gravityWell)
+        private double Accelerate((Position Position, double Mass) gravityWell)
         {
             var d = Position.Distance(gravityWell.Position);
             var a = (Universe.G * gravityWell.Mass / (d * d));
             var angle = Position.Angle(gravityWell.Position);
-            var dx = a * Math.Cos(angle);
-            var dy = a * Math.Sin(angle);
-            VelocityX += dx * timeScale;
-            VelocityY += dy * timeScale;
-
+            AccelerationX += a * Math.Cos(angle);
+            AccelerationY += a * Math.Sin(angle);
             return d;
         }
     }

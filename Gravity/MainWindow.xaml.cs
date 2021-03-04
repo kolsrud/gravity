@@ -81,6 +81,7 @@ namespace Gravity
         {
             var center = GetCanvasCenter();
             ViewModel.UpdatePositions(center, Scale);
+            ViewModel.UpdateVectors(Scale);
         }
 
         private void Canvas_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
@@ -105,9 +106,9 @@ namespace Gravity
             PlanetViewModels.ForEach(p => p.UpdatePosition(canvasCenter, scale));
         }
 
-        public void UpdateVectors()
+        public void UpdateVectors(double scale)
         {
-            PlanetViewModels.ForEach(p => p.UpdateVectors());
+            PlanetViewModels.ForEach(p => p.UpdateVectors(scale));
         }
     }
 
@@ -144,37 +145,32 @@ namespace Gravity
         private int i;
         public void UpdatePosition(Position canvasCenter, double scale)
         {
-            Canvas c;
             var x = canvasCenter.X + Planet.Position.X / scale;
             var y = canvasCenter.Y + Planet.Position.Y / scale;
             var px = x - Planet.Radius / scale;
             var py = y - Planet.Radius / scale;
             Canvas.SetLeft(PlanetGraphics, px);
             Canvas.SetTop(PlanetGraphics, py);
-            // Canvas.SetLeft(PlanetGraphics, x - Planet.Radius / scale);
-            // Canvas.SetTop(PlanetGraphics, y - Planet.Radius / scale);
-            // PlanetGraphics.SetValue(Canvas.LeftProperty, (x - Planet.Radius / scale));
-            // PlanetGraphics.SetValue(Canvas.TopProperty, (y - Planet.Radius / scale));
-            // VelocityVector.SetValue(Canvas.LeftProperty, x);
-            // VelocityVector.SetValue(Canvas.TopProperty, y);
-            // AccelerationVector.SetValue(Canvas.LeftProperty, x);
-            // AccelerationVector.SetValue(Canvas.TopProperty, y);
+            Canvas.SetLeft(VelocityVector, x);
+            Canvas.SetTop(VelocityVector, y);
+            Canvas.SetLeft(AccelerationVector, x);
+            Canvas.SetTop(AccelerationVector, y);
         }
 
-        public void UpdateVectors()
+        public void UpdateVectors(double scale)
         {
-            VelocityVector.X2 = 100;
-            VelocityVector.Y2 = 0;
+            VelocityVector.X2 = Planet.VelocityX / 50;
+            VelocityVector.Y2 = Planet.VelocityY / 50;
 
-            AccelerationVector.X2 = 0;
-            AccelerationVector.Y2 = 100;
+            AccelerationVector.X2 = Planet.AccelerationX*1_000;
+            AccelerationVector.Y2 = Planet.AccelerationY*1_000;
         }
 
         public void AddToCanvas(Canvas canvas)
         {
             canvas.Children.Add(PlanetGraphics);
-            // canvas.Children.Add(VelocityVector);
-            // canvas.Children.Add(AccelerationVector);
+            canvas.Children.Add(VelocityVector);
+            canvas.Children.Add(AccelerationVector);
         }
     }
 }
