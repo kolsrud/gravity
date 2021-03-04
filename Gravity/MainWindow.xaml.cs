@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Gravity.Universe;
@@ -86,8 +87,19 @@ namespace Gravity
 
         private void Canvas_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            Step();
-            TickGui(this);
+            switch (e.Key)
+            {
+                case Key.A:
+                    ViewModel.ToggleAccelerationVectors();
+                    break;
+                case Key.V:
+                    ViewModel.ToggleVelocityVectors();
+                    break;
+                default:
+                    Step();
+                    TickGui(this);
+                    break;
+            }
         }
     }
 
@@ -110,12 +122,24 @@ namespace Gravity
         {
             PlanetViewModels.ForEach(p => p.UpdateVectors(scale));
         }
+
+        public void ToggleAccelerationVectors()
+        {
+            PlanetViewModels.ForEach(p => p.ToggleAccelerationVector());
+        }
+
+        public void ToggleVelocityVectors()
+        {
+            PlanetViewModels.ForEach(p => p.ToggleVelocityVector());
+        }
     }
 
     internal class PlanetViewModel
     {
         public Ellipse PlanetGraphics { get; }
+        private bool VelocityVectorActive = true;
         public Line VelocityVector { get; }
+        private bool AccelerationVectorActive = true;
         public Line AccelerationVector { get; }
         public Planet Planet { get; }
 
@@ -142,7 +166,6 @@ namespace Gravity
             };
         }
 
-        private int i;
         public void UpdatePosition(Position canvasCenter, double scale)
         {
             var x = canvasCenter.X + Planet.Position.X / scale;
@@ -171,6 +194,18 @@ namespace Gravity
             canvas.Children.Add(PlanetGraphics);
             canvas.Children.Add(VelocityVector);
             canvas.Children.Add(AccelerationVector);
+        }
+
+        public void ToggleAccelerationVector()
+        {
+            AccelerationVectorActive = !AccelerationVectorActive;
+            AccelerationVector.StrokeThickness = AccelerationVectorActive ? 1 : 0;
+        }
+
+        public void ToggleVelocityVector()
+        {
+            VelocityVectorActive = !VelocityVectorActive;
+            VelocityVector.StrokeThickness = VelocityVectorActive ? 1 : 0;
         }
     }
 }
