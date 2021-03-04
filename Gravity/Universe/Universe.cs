@@ -16,47 +16,58 @@ namespace Gravity.Universe
             const int earthRadius = 6_371_000;
             const int moonRadius = 1_737_100;
             var earth = new Planet(earthRadius, 5.9725e+24, (0, 0), Brushes.Blue);
-            earth.SetVelocity(20, Math.PI / 2);
+            earth.SetVelocity(0, Math.PI / 2);
             //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
             var moon = new Planet(moonRadius, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
             moon.SetVelocity(1022, -Math.PI / 2);
-            // var moon = new Planet(Scale, 3474_200, 7.348e+22, (184_400_000, 0), Brushes.LightGray);
-            //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (6_400_000, 0), Brushes.LightGray);
+            // // var moon = new Planet(Scale, 3474_200, 7.348e+22, (184_400_000, 0), Brushes.LightGray);
+            // //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (6_400_000, 0), Brushes.LightGray);
             var moon2 = new Planet(moonRadius, 7.348e+22, (300_000_000, 0), Brushes.LightGray);
             moon2.SetVelocity(622, -Math.PI / 2);
             var moon3 = new Planet(moonRadius, 7.348e+22, (200_000_000, 0), Brushes.LightGray);
             moon3.SetVelocity(822, -Math.PI / 2);
             var moon4 = new Planet(moonRadius, 7.348e+22, (-100_000_000, 0), Brushes.LightGray);
-            moon4.SetVelocity(1222, Math.PI / 2);
+            moon4.SetVelocity(1122, Math.PI / 2);
+            var moon5 = new Planet(moonRadius, 7.348e+22, (-120_000_000, 0), Brushes.LightGray);
+            moon5.SetVelocity(1322, Math.PI / 2);
 
-            Planets.AddRange(new[] {earth, moon, moon2, moon3, moon4});
+            Planets.AddRange(new[] {earth});
+            Planets.AddRange(new []{moon, moon2, moon3, moon4});
+        }
+
+        public double Step(int timeScale)
+        {
+            Planets.ForEach(p => p.Move(timeScale));
+            var gravityWells = Planets.Select(p => (p.Position, p.Mass)).ToList();
+            return Planets.Select(p => p.Accelerate(timeScale, gravityWells)).Min();
         }
     }
 
     internal class Planet : MovingBody
     {
+        public double Radius { get; }
         public double Mass { get; }
+        public SolidColorBrush Color { get; }
 
         public Planet(double radius, double mass, (double, double) position, SolidColorBrush color)
-            : base(new Circle(new Position(position), color, (int)radius))
+            : base(new Position(position))
         {
+            Radius = radius;
             Mass = mass;
+            Color = color;
         }
     }
 
     internal abstract class MovingBody
     {
-        public GraphicsElement Graphics { get; }
-        public Line VelocityVector { get; }
-
-        public IEnumerable<GraphicsElement> GetGraphics()
-        {
-            return new[] { Graphics, VelocityVector };
-        }
-
-        public Position Position => Graphics.Position;
+        public Position Position;
         public double VelocityX = 0;
         public double VelocityY = 0;
+
+        internal MovingBody(Position position)
+        {
+            Position = position;
+        }
 
         public void SetVelocity(double velocity, double angle)
         {
@@ -64,34 +75,26 @@ namespace Gravity.Universe
             VelocityY = velocity * Math.Sin(angle);
         }
 
-        protected MovingBody(GraphicsElement graphics)
+        public void Move(int timeScale)
         {
-            Graphics = graphics;
-            VelocityVector = new Line(graphics.Position, Brushes.Green);
+            Position.X += VelocityX * timeScale;
+            Position.Y += VelocityY * timeScale;
         }
 
-        public void Move(double stepScale)
+        public double Accelerate(int timeScale, List<(Position Position, double Mass)> gravityWells)
         {
-            Position.X += VelocityX * stepScale;
-            Position.Y += VelocityY * stepScale;
-            VelocityVector.Position.X = Position.X;
-            VelocityVector.Position.Y = Position.Y;
+            return gravityWells.Where(well => well.Position != Position).Select(well => Accelerate(timeScale, well)).Min();
         }
 
-        public double Accelerate(double stepScale, List<(Position Position, double Mass)> gravityWells)
-        {
-            return gravityWells.Select(gw => Accelerate(stepScale, gw)).Min();
-        }
-
-        private double Accelerate(double stepScale, (Position Position, double Mass) gravityWell)
+        private double Accelerate(int timeScale, (Position Position, double Mass) gravityWell)
         {
             var d = Position.Distance(gravityWell.Position);
             var a = (Universe.G * gravityWell.Mass / (d * d));
             var angle = Position.Angle(gravityWell.Position);
-            var dx = a * Math.Cos(angle) * stepScale;
-            var dy = a * Math.Sin(angle) * stepScale;
-            VelocityX += dx;
-            VelocityY += dy;
+            var dx = a * Math.Cos(angle);
+            var dy = a * Math.Sin(angle);
+            VelocityX += dx * timeScale;
+            VelocityY += dy * timeScale;
 
             return d;
         }

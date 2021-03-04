@@ -29,9 +29,17 @@ namespace Gravity
 
         public double Angle(Position p)
         {
-            var x = p.X - X;
-            var y = p.Y - Y;
-            return Math.Atan2(y, x);
+            return SubTract(p).Angle();
+        }
+
+        public Position SubTract(Position p)
+        {
+            return new Position(p.X - X, p.Y - Y);
+        }
+
+        public double Angle()
+        {
+            return Math.Atan2(Y, X);
         }
     }
 }
