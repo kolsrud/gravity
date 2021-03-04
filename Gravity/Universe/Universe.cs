@@ -9,9 +9,31 @@ namespace Gravity.Universe
     {
         public const double G = 6.674e-11;
 
+        internal List<Planet> Planets = new List<Planet>();
+
+        public Universe()
+        {
+            const int earthRadius = 6_371_000;
+            const int moonRadius = 1_737_100;
+            var earth = new Planet(earthRadius, 5.9725e+24, (0, 0), Brushes.Blue);
+            earth.SetVelocity(20, Math.PI / 2);
+            //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
+            var moon = new Planet(moonRadius, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
+            moon.SetVelocity(1022, -Math.PI / 2);
+            // var moon = new Planet(Scale, 3474_200, 7.348e+22, (184_400_000, 0), Brushes.LightGray);
+            //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (6_400_000, 0), Brushes.LightGray);
+            var moon2 = new Planet(moonRadius, 7.348e+22, (300_000_000, 0), Brushes.LightGray);
+            moon2.SetVelocity(622, -Math.PI / 2);
+            var moon3 = new Planet(moonRadius, 7.348e+22, (200_000_000, 0), Brushes.LightGray);
+            moon3.SetVelocity(822, -Math.PI / 2);
+            var moon4 = new Planet(moonRadius, 7.348e+22, (-100_000_000, 0), Brushes.LightGray);
+            moon4.SetVelocity(1222, Math.PI / 2);
+
+            Planets.AddRange(new[] {earth, moon, moon2, moon3, moon4});
+        }
     }
 
-    class Planet : MovingBody
+    internal class Planet : MovingBody
     {
         public double Mass { get; }
 

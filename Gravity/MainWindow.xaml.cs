@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using Gravity.Universe;
 
@@ -20,7 +17,7 @@ namespace Gravity
     {
 		private Timer _timer;
         private Timer _guiTimer;
-        private readonly List<Planet> Planets = new List<Planet>();
+        private readonly Universe.Universe Universe = new Universe.Universe();
         private readonly List<MovingBody> Bodies = new List<MovingBody>();
 
 		public MainWindow()
@@ -47,7 +44,7 @@ namespace Gravity
                 return;
 
             _inTickGui = true;
-            Application.Current.Dispatcher.Invoke(() => Planets.ForEach(SetPosition));
+            Application.Current.Dispatcher.Invoke(() => Universe.Planets.ForEach(SetPosition));
             _inTickGui = false;
         }
 
@@ -61,37 +58,16 @@ namespace Gravity
 
         private void Canvas_OnLoaded(object sender, RoutedEventArgs e)
         {
-            const int earthRadius = 6_371_000;
-            const int moonRadius = 1_737_100;
-            var earth = new Planet(earthRadius, 5.9725e+24, (0, 0), Brushes.Blue);
-            earth.SetVelocity(20, Math.PI / 2);
-//            var moon = new Planet(Scale, 3474_200, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
-            var moon = new Planet(moonRadius, 7.348e+22, (384_400_000, 0), Brushes.LightGray);
-            moon.SetVelocity(1022, -Math.PI / 2);
-            // var moon = new Planet(Scale, 3474_200, 7.348e+22, (184_400_000, 0), Brushes.LightGray);
-            //            var moon = new Planet(Scale, 3474_200, 7.348e+22, (6_400_000, 0), Brushes.LightGray);
-            var moon2 = new Planet(moonRadius, 7.348e+22, (300_000_000, 0), Brushes.LightGray);
-            moon2.SetVelocity(622, -Math.PI / 2);
-            var moon3 = new Planet(moonRadius, 7.348e+22, (200_000_000, 0), Brushes.LightGray);
-            moon3.SetVelocity(822, -Math.PI / 2);
-            var moon4 = new Planet(moonRadius, 7.348e+22, (-100_000_000, 0), Brushes.LightGray);
-            moon4.SetVelocity(1222, Math.PI / 2);
-
-            Planets.Add(earth);
-            Planets.Add(moon);
-            Planets.Add(moon2);
-            Planets.Add(moon3);
-            Planets.Add(moon4);
-            Planets.ForEach(p => AddElement(Canvas, p));
+            Universe.Planets.ForEach(p => AddElement(Canvas, p));
             _timer = new Timer(Tick, this, 0, 1000/500);
             _guiTimer = new Timer(TickGui, this, 0, 1000/50);
         }
 
         public void Step()
         {
-            var gravityWells = Planets.Select(p => (p.Position, p.Mass)).ToList();
+            var gravityWells = Universe.Planets.Select(p => (p.Position, p.Mass)).ToList();
             double minDistance = double.MaxValue;
-            foreach (var movingBody in Planets.Concat(Bodies))
+            foreach (var movingBody in Universe.Planets.Concat(Bodies))
             {
                 movingBody.Move(StepScale);
                 var bodies = gravityWells.Where(well => well.Position != movingBody.Position).ToList();
@@ -104,11 +80,6 @@ namespace Gravity
                 StepScale = 60;
             else
                 StepScale = 60 * 20;
-        }
-
-        private double Mass(double d, int exp)
-        {
-            return d*Math.Pow(10, 22);
         }
 
         private void AddElement(Canvas canvas, MovingBody body)
