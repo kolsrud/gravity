@@ -71,11 +71,11 @@ namespace Gravity
             var minDistance = Universe.Step(TimeScale);
 
             if (minDistance < 1_000_000)
-                TimeScale = 10;
+                TimeScale = 1;
             else if (minDistance < 10_000_000)
-                TimeScale = 60;
+                TimeScale = 30;
             else
-                TimeScale = 60 * 20;
+                TimeScale = 60 * 5;
         }
 
         private void SetPosition()
@@ -141,6 +141,8 @@ namespace Gravity
         public Line VelocityVector { get; }
         private bool AccelerationVectorActive = true;
         public Line AccelerationVector { get; }
+        public TextBlock Name { get; }
+
         public Planet Planet { get; }
 
         public PlanetViewModel(double scale, Planet planet)
@@ -164,6 +166,12 @@ namespace Gravity
                 Stroke = Brushes.Red,
                 StrokeThickness = 1
             };
+
+            Name = new TextBlock
+            {
+                Text = Planet.Name,
+                Foreground = Brushes.White
+            };
         }
 
         public void UpdatePosition(Position canvasCenter, double scale)
@@ -178,6 +186,8 @@ namespace Gravity
             Canvas.SetTop(VelocityVector, y);
             Canvas.SetLeft(AccelerationVector, x);
             Canvas.SetTop(AccelerationVector, y);
+            Canvas.SetLeft(Name, x);
+            Canvas.SetTop(Name, y);
         }
 
         public void UpdateVectors(double scale)
@@ -194,6 +204,7 @@ namespace Gravity
             canvas.Children.Add(PlanetGraphics);
             canvas.Children.Add(VelocityVector);
             canvas.Children.Add(AccelerationVector);
+            canvas.Children.Add(Name);
         }
 
         public void ToggleAccelerationVector()
