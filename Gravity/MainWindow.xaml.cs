@@ -50,7 +50,7 @@ namespace Gravity
             _inTickGui = false;
         }
 
-        public static double Scale = 1_500_000; // 1 pixel = x m
+        public static double Scale = 750_000; // 1 pixel = x m
         public static int TimeScale = 60*20; // seconds
 
         private Position GetCanvasCenter()
@@ -93,6 +93,15 @@ namespace Gravity
                     break;
                 case Key.V:
                     ViewModel.ToggleVelocityVectors();
+                    break;
+                case Key.Up:
+                    Universe.SpaceShips.ForEach(s => s.Burn());
+                    break;
+                case Key.Left:
+                    Universe.SpaceShips.ForEach(s => s.Rotate(25));
+                    break;
+                case Key.Right:
+                    Universe.SpaceShips.ForEach(s => s.Rotate(-25));
                     break;
                 default:
                     Step();

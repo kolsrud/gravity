@@ -28,9 +28,10 @@ namespace Gravity.Universe
 
             Planets.Add(earth);
             Planets.Add(moon);
-            Planets.AddRange(new []{moon2, moon3, moon4});
+            // Planets.AddRange(new []{moon2, moon3, moon4});
 
-            var apollo = new SpaceShip("Apollo", (-150_000_000, 0), (up, 1000));
+//            var apollo = new SpaceShip("Apollo", (-150_000_000, 0), (up, 1000));
+            var apollo = new SpaceShip("Apollo", (-150_000_000, 0), (down, 1000));
             SpaceShips.Add(apollo);
         }
 
@@ -45,9 +46,24 @@ namespace Gravity.Universe
     internal class SpaceShip : MovingBody
     {
         public Vector Direction;
+        private int _directionTicks = 0;
+
         public SpaceShip(string name, (double, double) position, (double, double) velocity) : base(name, new Position(position), new Vector(velocity))
         {
             Direction = new Vector(0);
+        }
+
+        public void Rotate(int ticks)
+        {
+            _directionTicks += ticks;
+            Direction.Angle = -Math.PI * _directionTicks / 100;
+        }
+
+        private const int BurnFactor = 10;
+        public void Burn()
+        {
+            VelocityX += Direction.ComponentX * BurnFactor;
+            VelocityY += Direction.ComponentY * BurnFactor;
         }
     }
 
@@ -91,6 +107,9 @@ namespace Gravity.Universe
 
         public double Accelerate(int timeScale, List<(Position Position, double Mass)> gravityWells)
         {
+            if (!gravityWells.Any())
+                return double.MaxValue;
+
             AccelerationX = 0;
             AccelerationY = 0;
             var minDistance = gravityWells.Where(well => well.Position != Position).Select(Accelerate).Min();
