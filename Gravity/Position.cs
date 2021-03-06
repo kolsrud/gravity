@@ -29,12 +29,27 @@ namespace Gravity
 
         public double Angle(Position p)
         {
-            return SubTract(p).Angle();
+            return Subtract(p).Angle();
         }
 
-        public Position SubTract(Position p)
+        public Position Scale(double scale)
+        {
+            return new Position(X / scale, Y / scale);
+        }
+
+        public Position Add(Position p)
+        {
+            return new Position(p.X + X, p.Y + Y);
+        }
+
+        public Position Subtract(Position p)
         {
             return new Position(p.X - X, p.Y - Y);
+        }
+
+        public Position Subtract(double d)
+        {
+            return new Position(X - d, Y - d);
         }
 
         public double Angle()
