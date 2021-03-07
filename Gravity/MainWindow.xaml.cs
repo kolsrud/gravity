@@ -103,6 +103,12 @@ namespace Gravity
                 case Key.Right:
                     Universe.SpaceShips.ForEach(s => s.Rotate(-25));
                     break;
+                case Key.Z:
+                    Scale *= 0.75;
+                    break;
+                case Key.X:
+                    Scale /= 0.75;
+                    break;
                 default:
                     Step();
                     TickGui(this);

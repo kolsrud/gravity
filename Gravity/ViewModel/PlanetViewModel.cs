@@ -17,17 +17,24 @@ namespace Gravity.ViewModel
             Planet = planet;
             PlanetGraphics = new Ellipse()
             {
-                Width = planet.Radius * 2 / scale,
-                Height = planet.Radius * 2 / scale,
                 Fill = planet.Color
             };
+            SetGraphicsWidth(scale);
         }
 
         public override void UpdatePosition(Position canvasCenter, Position universeCenter, double scale)
         {
             var center = GetCenter(canvasCenter, universeCenter, scale);
+            SetGraphicsWidth(scale);
             SetPosition(PlanetGraphics, center.Subtract(Planet.Radius / scale));
             base.UpdatePosition(center);
+        }
+
+        private void SetGraphicsWidth(double scale)
+        {
+            var r = Planet.Radius * 2 / scale;
+            PlanetGraphics.Width = r;
+            PlanetGraphics.Height = r;
         }
 
         protected override IEnumerable<UIElement> GetCustomGraphics()
