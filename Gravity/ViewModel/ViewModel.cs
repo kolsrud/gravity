@@ -18,7 +18,11 @@ namespace Gravity.ViewModel
             SpaceShipViewModels = universe.SpaceShips.Select(s => new SpaceShipViewModel(s)).ToList();
             Center = MovingBodies[1].Position;
 
-			MovingBodies.ForEach(m => m.AddToCanvas(canvas));
+            foreach (var body in MovingBodies)
+            {
+                body.AddToCanvas(canvas);
+                body.Selected += (MovingBodyViewModel sender, object args) => Center = sender.Position;
+            }
         }
 
         private void UpdatePositions(Position canvasCenter, double scale)

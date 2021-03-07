@@ -22,6 +22,16 @@ namespace Gravity.ViewModel
 
         private const int SelectionCircleSize = 30;
 
+        public event SelectionEventHandler Selected;
+        internal delegate void SelectionEventHandler(MovingBodyViewModel sender, object args);
+
+        private void OnSelected()
+        {
+            if (this.Selected != null)
+                Selected(this, null);
+        }
+
+
         protected MovingBodyViewModel(MovingBody m)
         {
             _m = m;
@@ -55,6 +65,7 @@ namespace Gravity.ViewModel
 
             SelectionCircle.MouseEnter += (sender, args) => SelectionCircle.Stroke = Brushes.White;
             SelectionCircle.MouseLeave += (sender, args) => SelectionCircle.Stroke = Brushes.Transparent;
+            SelectionCircle.MouseLeftButtonDown += (sender, args) => OnSelected();
         }
 
 		public void UpdateVectors(double scale)
