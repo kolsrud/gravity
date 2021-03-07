@@ -11,23 +11,24 @@ using Gravity.Universe;
 
 namespace Gravity
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
-		private Timer _timer;
+        private Timer _timer;
         private Timer _guiTimer;
         private readonly Universe.Universe Universe = new Universe.Universe();
         private readonly ViewModel.ViewModel ViewModel = new ViewModel.ViewModel();
 
-		public MainWindow()
-		{
-			InitializeComponent();
+        public MainWindow()
+        {
+            InitializeComponent();
             Canvas.Focus();
         }
 
         private bool _inTick = false;
+
         private void Tick(object? state)
         {
             if (_inTick)
@@ -39,6 +40,7 @@ namespace Gravity
         }
 
         private static bool _inTickGui;
+
         private void TickGui(object? state)
         {
             if (_inTickGui)
@@ -50,8 +52,9 @@ namespace Gravity
         }
 
         public static double Scale = 1_500_000; // 1 pixel = x m
+
         // public static double Scale = 750_000; // 1 pixel = x m
-        public static double TimeScale = 60*5; // seconds
+        public static double TimeScale = 60 * 5; // seconds
 
         private Position GetCanvasCenter()
         {
@@ -62,8 +65,8 @@ namespace Gravity
         {
             ViewModel.Initialize(Scale, Canvas, Universe);
             TickGui(this);
-            _timer = new Timer(Tick, this, 0, 1000/500);
-            _guiTimer = new Timer(TickGui, this, 0, 1000/50);
+            _timer = new Timer(Tick, this, 0, 1000 / 500);
+            _guiTimer = new Timer(TickGui, this, 0, 1000 / 50);
         }
 
         public void Step()
@@ -88,7 +91,7 @@ namespace Gravity
                     ViewModel.ToggleVelocityVectors();
                     break;
                 case Key.Up:
-                    Universe.SpaceShips.ForEach(s => s.Burn());
+                    Universe.SpaceShips.ForEach(s => s.Burn(true));
                     break;
                 case Key.Left:
                     Universe.SpaceShips.ForEach(s => s.Rotate(25));
@@ -102,15 +105,25 @@ namespace Gravity
                 case Key.X:
                     Scale /= 0.75;
                     break;
-                case Key.Q:
-                    TimeScale *= 0.75;
-                    break;
-                case Key.W:
+                case Key.OemPlus:
                     TimeScale /= 0.75;
+                    break;
+                case Key.OemMinus:
+                    TimeScale *= 0.75;
                     break;
                 default:
                     Step();
                     TickGui(this);
+                    break;
+            }
+        }
+
+        private void Canvas_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Up:
+                    Universe.SpaceShips.ForEach(s => s.Burn(false));
                     break;
             }
         }

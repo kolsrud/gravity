@@ -27,7 +27,7 @@ namespace Gravity.Universe
             Position.Y += VelocityY * timeScale;
         }
 
-        public double Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
+        public virtual double Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
         {
             if (!gravityWells.Any())
                 return double.MaxValue;

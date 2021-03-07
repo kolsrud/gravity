@@ -10,6 +10,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Canvas Name="Canvas" Focusable="True" Background="Black" Grid.Column="0" Loaded="Canvas_OnLoaded" KeyDown="Canvas_OnKeyDown"/>
+        <Canvas Name="Canvas" Focusable="True" Background="Black" Grid.Column="0" Loaded="Canvas_OnLoaded" KeyDown="Canvas_OnKeyDown" KeyUp="Canvas_OnKeyUp"/>
     </Grid>
 </Window>
