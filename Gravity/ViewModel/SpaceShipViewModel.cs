@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -34,11 +36,9 @@ namespace Gravity.ViewModel
             };
         }
 
-        public override void AddToCanvas(Canvas canvas)
+        protected override IEnumerable<UIElement> GetCustomGraphics()
         {
-            base.AddToCanvas(canvas);
-            canvas.Children.Add(SpaceShipGraphics);
-            canvas.Children.Add(OrientationVector);
+            return new UIElement[] {SpaceShipGraphics, OrientationVector};
         }
 
         public override void UpdatePosition(Position canvasCenter, Position universeCenter, double scale)

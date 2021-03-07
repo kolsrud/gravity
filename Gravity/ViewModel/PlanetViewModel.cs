@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Shapes;
 using Gravity.Universe;
 
@@ -28,10 +30,9 @@ namespace Gravity.ViewModel
             base.UpdatePosition(center);
         }
 
-        public override void AddToCanvas(Canvas canvas)
+        protected override IEnumerable<UIElement> GetCustomGraphics()
         {
-            base.AddToCanvas(canvas);
-            canvas.Children.Add(PlanetGraphics);
+            return new[] {PlanetGraphics};
         }
     }
 }

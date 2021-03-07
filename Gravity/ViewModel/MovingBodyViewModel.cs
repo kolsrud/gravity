@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -13,9 +15,12 @@ namespace Gravity.ViewModel
         private bool AccelerationVectorActive = true;
         public Line AccelerationVector { get; }
         public TextBlock Name { get; }
+        public Ellipse SelectionCircle { get; }
 
         private readonly MovingBody _m;
         public Position Position => _m.Position;
+
+        private const int SelectionCircleSize = 30;
 
         protected MovingBodyViewModel(MovingBody m)
         {
@@ -38,9 +43,21 @@ namespace Gravity.ViewModel
                 Text = m.Name,
                 Foreground = Brushes.White
             };
+
+            SelectionCircle = new Ellipse
+            {
+                Width = SelectionCircleSize,
+                Height = SelectionCircleSize,
+                Stroke = Brushes.Transparent,
+                Fill = Brushes.Transparent,
+                Visibility = Visibility.Visible
+            };
+
+            SelectionCircle.MouseEnter += (sender, args) => SelectionCircle.Stroke = Brushes.White;
+            SelectionCircle.MouseLeave += (sender, args) => SelectionCircle.Stroke = Brushes.Transparent;
         }
 
-        public void UpdateVectors(double scale)
+		public void UpdateVectors(double scale)
         {
             VelocityVector.X2 = _m.VelocityX / 50;
             VelocityVector.Y2 = _m.VelocityY / 50;
@@ -54,6 +71,7 @@ namespace Gravity.ViewModel
             SetPosition(VelocityVector, p);
             SetPosition(AccelerationVector, p);
             SetPosition(Name, p);
+            SetPosition(SelectionCircle, p.Subtract((double) SelectionCircleSize/2));
         }
 
         public static void SetPosition(UIElement e, Position p)
@@ -62,11 +80,18 @@ namespace Gravity.ViewModel
             Canvas.SetTop(e, p.Y);
         }
 
-        public virtual void AddToCanvas(Canvas canvas)
+        protected abstract IEnumerable<UIElement> GetCustomGraphics();
+
+        public void AddToCanvas(Canvas canvas)
         {
             canvas.Children.Add(VelocityVector);
             canvas.Children.Add(AccelerationVector);
+            foreach (var customGraphic in GetCustomGraphics())
+            {
+                canvas.Children.Add(customGraphic);
+            }
             canvas.Children.Add(Name);
+            canvas.Children.Add(SelectionCircle);
         }
 
         public void ToggleAccelerationVector()
