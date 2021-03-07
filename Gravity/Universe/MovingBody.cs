@@ -21,13 +21,13 @@ namespace Gravity.Universe
             VelocityY = velocity.ComponentY;
         }
 
-        public void Move(int timeScale)
+        public void Move(double timeScale)
         {
             Position.X += VelocityX * timeScale;
             Position.Y += VelocityY * timeScale;
         }
 
-        public double Accelerate(int timeScale, List<(Position Position, double Mass)> gravityWells)
+        public double Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
         {
             if (!gravityWells.Any())
                 return double.MaxValue;

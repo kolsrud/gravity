@@ -35,7 +35,7 @@ namespace Gravity.Universe
             SpaceShips.Add(apollo);
         }
 
-        public double Step(int timeScale)
+        public double Step(double timeScale)
         {
             MovingBodies.ForEach(m => m.Move(timeScale));
             var gravityWells = Planets.Select(p => (p.Position, p.Mass)).ToList();

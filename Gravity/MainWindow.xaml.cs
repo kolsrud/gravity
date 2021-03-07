@@ -51,7 +51,7 @@ namespace Gravity
 
         public static double Scale = 1_500_000; // 1 pixel = x m
         // public static double Scale = 750_000; // 1 pixel = x m
-        public static int TimeScale = 60*20; // seconds
+        public static double TimeScale = 60*5; // seconds
 
         private Position GetCanvasCenter()
         {
@@ -69,13 +69,6 @@ namespace Gravity
         public void Step()
         {
             var minDistance = Universe.Step(TimeScale);
-
-            if (minDistance < 1_000_000)
-                TimeScale = 1;
-            else if (minDistance < 10_000_000)
-                TimeScale = 30;
-            else
-                TimeScale = 60 * 5;
         }
 
         private void SetPosition()
@@ -108,6 +101,12 @@ namespace Gravity
                     break;
                 case Key.X:
                     Scale /= 0.75;
+                    break;
+                case Key.Q:
+                    TimeScale *= 0.75;
+                    break;
+                case Key.W:
+                    TimeScale /= 0.75;
                     break;
                 default:
                     Step();
