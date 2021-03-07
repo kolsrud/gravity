@@ -41,9 +41,9 @@ namespace Gravity.ViewModel
             canvas.Children.Add(OrientationVector);
         }
 
-        public override void UpdatePosition(Position canvasCenter, double scale)
+        public override void UpdatePosition(Position canvasCenter, Position universeCenter, double scale)
         {
-            var center = GetCenter(canvasCenter, scale);
+            var center = GetCenter(canvasCenter, universeCenter, scale);
             SetPosition(SpaceShipGraphics, center.Subtract(1));
             SetPosition(OrientationVector, center);
             rotation.Angle = _spaceShip.Direction.Angle*(180/Math.PI);

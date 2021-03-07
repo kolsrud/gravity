@@ -21,9 +21,9 @@ namespace Gravity.ViewModel
             };
         }
 
-        public override void UpdatePosition(Position canvasCenter, double scale)
+        public override void UpdatePosition(Position canvasCenter, Position universeCenter, double scale)
         {
-            var center = GetCenter(canvasCenter, scale);
+            var center = GetCenter(canvasCenter, universeCenter, scale);
             SetPosition(PlanetGraphics, center.Subtract(Planet.Radius / scale));
             base.UpdatePosition(center);
         }

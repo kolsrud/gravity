@@ -14,16 +14,20 @@ namespace Gravity.ViewModel
         public List<SpaceShipViewModel> SpaceShipViewModels { get; private set; }
         public List<MovingBodyViewModel> MovingBodies => PlanetViewModels.Concat<MovingBodyViewModel>(SpaceShipViewModels).ToList();
 
+        public Position Center { get; private set; }
+
         public void Initialize(double scale, Canvas canvas, Universe.Universe universe)
         {
             PlanetViewModels = universe.Planets.Select(p => new PlanetViewModel(scale, p)).ToList();
             SpaceShipViewModels = universe.SpaceShips.Select(s => new SpaceShipViewModel(s)).ToList();
+            Center = MovingBodies[1].Position;
+
 			MovingBodies.ForEach(m => m.AddToCanvas(canvas));
         }
 
         private void UpdatePositions(Position canvasCenter, double scale)
         {
-            MovingBodies.ForEach(m => m.UpdatePosition(canvasCenter, scale));
+            MovingBodies.ForEach(m => m.UpdatePosition(canvasCenter, Center, scale));
         }
 
         private void UpdateVectors(double scale)
@@ -57,6 +61,8 @@ namespace Gravity.ViewModel
         public TextBlock Name { get; }
 
         private readonly MovingBody _m;
+        public Position Position => _m.Position;
+
         protected MovingBodyViewModel(MovingBody m)
         {
             _m = m;
@@ -121,11 +127,11 @@ namespace Gravity.ViewModel
             VelocityVector.StrokeThickness = VelocityVectorActive ? 1 : 0;
         }
 
-        protected Position GetCenter(Position canvasCenter, double scale)
+        protected Position GetCenter(Position canvasCenter, Position universeCenter, double scale)
         {
-            return canvasCenter.Add(_m.Position.Scale(scale));
+            return canvasCenter.Add(universeCenter.Subtract(_m.Position).Scale(scale));
         }
 
-        public abstract void UpdatePosition(Position canvasCenter, double scale);
+        public abstract void UpdatePosition(Position canvasCenter, Position universeCenter, double scale);
     }
 }

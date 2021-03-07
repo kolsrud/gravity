@@ -45,12 +45,12 @@ namespace Gravity
                 return;
 
             _inTickGui = true;
-            var center = GetCanvasCenter();
             Application.Current.Dispatcher.Invoke(SetPosition);
             _inTickGui = false;
         }
 
-        public static double Scale = 750_000; // 1 pixel = x m
+        public static double Scale = 1_500_000; // 1 pixel = x m
+        // public static double Scale = 750_000; // 1 pixel = x m
         public static int TimeScale = 60*20; // seconds
 
         private Position GetCanvasCenter()
