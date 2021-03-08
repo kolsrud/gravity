@@ -28,9 +28,8 @@ namespace Gravity.Universe
 
             Planets.Add(earth);
             Planets.Add(moon);
-            // Planets.AddRange(new []{moon2, moon3, moon4});
+            Planets.AddRange(new []{moon2, moon3, moon4});
 
-//            var apollo = new SpaceShip("Apollo", (-150_000_000, 0), (up, 1000));
             var apollo = new SpaceShip("Apollo", (-150_000_000, 0), (down, 1000));
             SpaceShips.Add(apollo);
         }

@@ -51,7 +51,14 @@ namespace Gravity
 
         public static Vector Add(IEnumerable<Vector> vs)
         {
-            return vs.Aggregate(NullVector, Add );
+            return vs.Aggregate(NullVector, Add);
+        }
+
+        public override string ToString()
+        {
+            var v = Amplitude > 500 ? $"{Amplitude/1000:#0.00} km/s" : $"{Amplitude:#0.00} m/s";
+
+            return $"{v}, {(Angle / Math.PI):#0.00} PI";
         }
     }
 }

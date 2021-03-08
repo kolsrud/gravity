@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -31,7 +30,6 @@ namespace Gravity.ViewModel
             if (this.Selected != null)
                 Selected(this, null);
         }
-
 
         protected MovingBodyViewModel(MovingBody m)
         {
@@ -69,9 +67,14 @@ namespace Gravity.ViewModel
             SelectionCircle.MouseLeftButtonDown += (sender, args) => OnSelected();
         }
 
-		public void UpdateVectors(Vector referenceVector)
+        public Vector RelativeVelocity(Vector referenceVector)
         {
-            var v = _m.Velocity.Subtract(referenceVector).Scale((double)1 / 50);
+            return _m.Velocity.Subtract(referenceVector);
+        }
+
+        public void UpdateVectors(Vector referenceVector)
+        {
+            var v = RelativeVelocity(referenceVector).Scale((double)1 / 50);
             VelocityVector.X2 = v.ComponentX;
             VelocityVector.Y2 = v.ComponentY;
 
