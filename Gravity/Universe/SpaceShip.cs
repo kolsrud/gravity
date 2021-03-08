@@ -18,9 +18,10 @@ namespace Gravity.Universe
         public void Rotate(int ticks)
         {
             _directionTicks += ticks;
-            Direction = new Vector(-Math.PI * _directionTicks / 100, 0);
-//            Direction.Angle = -Math.PI * _directionTicks / 100;
+            Direction = new Vector(-Math.PI * _directionTicks / 100, 1);
         }
+
+        public bool EngineFiring => _engineFiring;
 
         public void Burn(bool status)
         {
@@ -33,7 +34,6 @@ namespace Gravity.Universe
         {
             if (_engineFiring)
             {
-//                Velocity.Set(Velocity.Add(Direction.Scale(10)));
                 Velocity = Velocity.Add(Direction.Scale(10));
             }
 
