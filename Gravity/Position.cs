@@ -2,7 +2,7 @@
 
 namespace Gravity
 {
-    class Position
+    public class Position
     {
         public double X;
         public double Y;
@@ -15,10 +15,16 @@ namespace Gravity
 
         public Position((double x, double y) p) : this(p.x, p.y) { }
 
+        public double Distance()
+        {
+            return Distance((0,0));
+        }
+
         public double Distance(Position p)
         {
             return Distance((p.X, p.Y));
         }
+
         public double Distance((double x, double y) p)
         {
             var x = Math.Abs(X - p.x);
@@ -40,6 +46,11 @@ namespace Gravity
         public Position Add(Position p)
         {
             return new Position(p.X + X, p.Y + Y);
+        }
+
+        public Position Add(Vector v)
+        {
+            return Add(new Position(v.ComponentX, v.ComponentY));
         }
 
         public Position Subtract(Position p)

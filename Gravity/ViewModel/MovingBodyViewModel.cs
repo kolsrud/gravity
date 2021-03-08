@@ -19,6 +19,7 @@ namespace Gravity.ViewModel
 
         private readonly MovingBody _m;
         public Position Position => _m.Position;
+        public Vector Velocity => _m.Velocity;
 
         private const int SelectionCircleSize = 30;
 
@@ -68,13 +69,14 @@ namespace Gravity.ViewModel
             SelectionCircle.MouseLeftButtonDown += (sender, args) => OnSelected();
         }
 
-		public void UpdateVectors(double scale)
+		public void UpdateVectors(Vector referenceVector)
         {
-            VelocityVector.X2 = _m.VelocityX / 50;
-            VelocityVector.Y2 = _m.VelocityY / 50;
+            var v = _m.Velocity.Subtract(referenceVector).Scale((double)1 / 50);
+            VelocityVector.X2 = v.ComponentX;
+            VelocityVector.Y2 = v.ComponentY;
 
-            AccelerationVector.X2 = _m.AccelerationX * 1_000;
-            AccelerationVector.Y2 = _m.AccelerationY * 1_000;
+            AccelerationVector.X2 = _m.Acceleration.ComponentX * 1_000;
+            AccelerationVector.Y2 = _m.Acceleration.ComponentY * 1_000;
         }
 
         public void UpdatePosition(Position p)

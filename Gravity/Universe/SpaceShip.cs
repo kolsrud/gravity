@@ -28,15 +28,14 @@ namespace Gravity.Universe
 
         private const int BurnFactor = 10;
 
-        public override double Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
+        public override void Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
         {
             if (_engineFiring)
             {
-                VelocityX += Direction.ComponentX * BurnFactor;
-                VelocityY += Direction.ComponentY * BurnFactor;
+                Velocity.Set(Velocity.Add(Direction.Scale(10)));
             }
 
-            return base.Accelerate(timeScale, gravityWells);
+            base.Accelerate(timeScale, gravityWells);
         }
     }
 }

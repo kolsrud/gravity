@@ -71,7 +71,7 @@ namespace Gravity
 
         public void Step()
         {
-            var minDistance = Universe.Step(TimeScale);
+            Universe.Step(TimeScale);
         }
 
         private void SetPosition()

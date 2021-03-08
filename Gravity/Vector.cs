@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
 
 namespace Gravity
 {
@@ -16,6 +19,45 @@ namespace Gravity
             Amplitude = amplitude;
         }
 
+        public Vector(Position p)
+        {
+            Angle = p.Angle();
+            Amplitude = p.Distance();
+        }
+
         public Vector((double angle, double amplitude) v) : this(v.angle, v.amplitude){}
+
+        public Vector Add(Vector v)
+        {
+            return new Vector(new Position(ComponentX + v.ComponentX, ComponentY + v.ComponentY));
+        }
+
+        public Vector Subtract(Vector v)
+        {
+            return Add(new Vector(v.Angle + Math.PI, v.Amplitude));
+        }
+
+        public Vector Scale(double timeScale)
+        {
+            return new Vector(Angle, Amplitude*timeScale);
+        }
+
+        public static Vector Add(Vector v0, Vector v1)
+        {
+            return v0.Add(v1);
+        }
+
+        public static Vector NullVector => new Vector(0,0);
+
+        public static Vector Add(IEnumerable<Vector> vs)
+        {
+            return vs.Aggregate(NullVector, Add );
+        }
+
+        public void Set(Vector v)
+        {
+            Angle = v.Angle;
+            Amplitude = v.Amplitude;
+        }
     }
 }
