@@ -12,6 +12,7 @@ namespace Gravity.ViewModel
         public List<MovingBodyViewModel> MovingBodies => PlanetViewModels.Concat<MovingBodyViewModel>(SpaceShipViewModels).ToList();
 
         public TextBlock SelectedBody;
+        public TextBlock Distance;
         public TextBlock Speed;
 
         public MovingBodyViewModel Center { get; private set; }
@@ -26,6 +27,11 @@ namespace Gravity.ViewModel
                 Text = "Current reference: " + Center.Name.Text,
                 Foreground = Brushes.LightGray
             };
+            Distance = new TextBlock
+            {
+                Text = "Distance: " + SpaceShipViewModels[0].Position.Distance(Center.Position),
+                Foreground = Brushes.LightGray
+            };
             Speed = new TextBlock
             {
                 Text = "Velocity: " + SpaceShipViewModels[0].RelativeVelocity(Center.Velocity),
@@ -33,7 +39,8 @@ namespace Gravity.ViewModel
             };
 
             AddToCanvas(canvas, SelectedBody, 0);
-            AddToCanvas(canvas, Speed, 1);
+            AddToCanvas(canvas, Distance, 1);
+            AddToCanvas(canvas, Speed, 2);
             foreach (var body in MovingBodies)
             {
                 body.AddToCanvas(canvas);
@@ -76,9 +83,19 @@ namespace Gravity.ViewModel
 
         public void UpdateGraphics(Position canvasCenter, double scale)
         {
+            Distance.Text = "Distance: " + FormatDistance(SpaceShipViewModels[0].Position.Distance(Center.Position));
             Speed.Text = "Velocity: " + SpaceShipViewModels[0].RelativeVelocity(Center.Velocity);
             UpdatePositions(canvasCenter, scale);
             UpdateVectors();
+        }
+
+        private string FormatDistance(double distance)
+        {
+            if (distance > 100_000_000)
+                return $"{distance / 1_000_000:#0.0} 10^3 km";
+            if (distance > 100_000_00)
+                return $"{distance/1000:#0.0} km";
+            return $"{distance:#0} m";
         }
     }
 }

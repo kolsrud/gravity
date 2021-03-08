@@ -58,7 +58,7 @@ namespace Gravity
         {
             var v = Amplitude > 500 ? $"{Amplitude/1000:#0.00} km/s" : $"{Amplitude:#0.00} m/s";
 
-            return $"{v}, {(Angle / Math.PI):#0.00} PI";
+            return $"{v}, {(Angle / Math.PI):#0.00} π";
         }
     }
 }
