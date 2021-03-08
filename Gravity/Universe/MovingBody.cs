@@ -29,9 +29,7 @@ namespace Gravity.Universe
         public virtual void Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
         {
             Acceleration = Vector.Add(gravityWells.Where(well => well.Position != Position).Select(Accelerate));
-            var v = Velocity.Add(Acceleration.Scale(timeScale));
-            Velocity.Amplitude = v.Amplitude;
-            Velocity.Angle = v.Angle;
+            Velocity = Velocity.Add(Acceleration.Scale(timeScale));
         }
 
         private Vector Accelerate((Position Position, double Mass) gravityWell)

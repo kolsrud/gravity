@@ -7,8 +7,8 @@ namespace Gravity
 {
     public class Vector
     {
-        public double Angle { get; set; }
-        public double Amplitude { get; set; }
+        public double Angle { get; }
+        public double Amplitude { get; }
 
         public double ComponentX => Amplitude * Math.Cos(Angle);
         public double ComponentY => Amplitude * Math.Sin(Angle);
@@ -52,12 +52,6 @@ namespace Gravity
         public static Vector Add(IEnumerable<Vector> vs)
         {
             return vs.Aggregate(NullVector, Add );
-        }
-
-        public void Set(Vector v)
-        {
-            Angle = v.Angle;
-            Amplitude = v.Amplitude;
         }
     }
 }
