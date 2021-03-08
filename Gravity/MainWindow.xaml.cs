@@ -77,7 +77,7 @@ namespace Gravity
         private void SetPosition()
         {
             var center = GetCanvasCenter();
-            ViewModel.UpdateGraphics(center, Scale);
+            ViewModel.UpdateGraphics(center, Scale, TimeScale);
         }
 
         private void Canvas_OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

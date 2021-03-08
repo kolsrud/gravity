@@ -11,10 +11,11 @@ namespace Gravity.ViewModel
         public List<SpaceShipViewModel> SpaceShipViewModels { get; private set; }
         public List<MovingBodyViewModel> MovingBodies => PlanetViewModels.Concat<MovingBodyViewModel>(SpaceShipViewModels).ToList();
 
-        public TextBlock SelectedBody;
-        public TextBlock ScaleText;
-        public TextBlock Distance;
-        public TextBlock Speed;
+        public Label SelectedBody;
+        public Label ScaleText;
+        public Label TimeScaleText;
+        public Label Distance;
+        public Label Speed;
 
         public MovingBodyViewModel Center { get; private set; }
 
@@ -23,31 +24,17 @@ namespace Gravity.ViewModel
             PlanetViewModels = universe.Planets.Select(p => new PlanetViewModel(scale, p)).ToList();
             SpaceShipViewModels = universe.SpaceShips.Select(s => new SpaceShipViewModel(s)).ToList();
             Center = MovingBodies[0];
-            SelectedBody = new TextBlock
-            {
-                Text = "Current reference: " + Center.Name.Text,
-                Foreground = Brushes.LightGray
-            };
-            ScaleText = new TextBlock
-            {
-                Text = "Scale: " + scale,
-                Foreground = Brushes.LightGray
-            };
-            Distance = new TextBlock
-            {
-                Text = "Distance: " + SpaceShipViewModels[0].Position.Distance(Center.Position),
-                Foreground = Brushes.LightGray
-            };
-            Speed = new TextBlock
-            {
-                Text = "Velocity: " + SpaceShipViewModels[0].RelativeVelocity(Center.Velocity),
-                Foreground = Brushes.LightGray
-            };
+            SelectedBody = new Label("Current reference:", Center.Name.Text);
+            ScaleText = new Label("Scale:");
+            TimeScaleText = new Label("Time scale:");
+            Distance = new Label("Distance:");
+            Speed = new Label("Δv:");
 
             AddToCanvas(canvas, SelectedBody, 0);
             AddToCanvas(canvas, ScaleText, 1);
-            AddToCanvas(canvas, Distance, 2);
-            AddToCanvas(canvas, Speed, 3);
+            AddToCanvas(canvas, TimeScaleText, 2);
+            AddToCanvas(canvas, Distance, 3);
+            AddToCanvas(canvas, Speed, 4);
             foreach (var body in MovingBodies)
             {
                 body.AddToCanvas(canvas);
@@ -65,7 +52,7 @@ namespace Gravity.ViewModel
         private void OnSelectionChanged(MovingBodyViewModel sender, object args)
         {
             Center = sender;
-            SelectedBody.Text = "Current reference: " + sender.Name.Text;
+            SelectedBody.SetText(sender.Name.Text);
         }
 
         private void UpdatePositions(Position canvasCenter, double scale)
@@ -88,11 +75,12 @@ namespace Gravity.ViewModel
             MovingBodies.ForEach(m => m.ToggleVelocityVector());
         }
 
-        public void UpdateGraphics(Position canvasCenter, double scale)
+        public void UpdateGraphics(Position canvasCenter, double scale, double timeScale)
         {
-            Distance.Text = "Distance: " + FormatDistance(SpaceShipViewModels[0].Position.Distance(Center.Position));
-            ScaleText.Text = "Scale: " + scale;
-            Speed.Text = "Velocity: " + SpaceShipViewModels[0].RelativeVelocity(Center.Velocity);
+            ScaleText.SetText(scale);
+            TimeScaleText.SetText(timeScale);
+            Distance.SetText(FormatDistance(SpaceShipViewModels[0].Position.Distance(Center.Position)));
+            Speed.SetText(SpaceShipViewModels[0].RelativeVelocity(Center.Velocity));
             UpdatePositions(canvasCenter, scale);
             UpdateVectors();
         }
@@ -106,6 +94,38 @@ namespace Gravity.ViewModel
             if (distance > 100_000)
                 return $"{distance / 1000:# ##0.0} km";
             return $"{distance:#0} m";
+        }
+    }
+
+    class Label : TextBlock
+    {
+        private readonly string _label;
+
+        public Label(string label)
+        {
+            _label = label;
+            Foreground = Brushes.LightGray;
+            SetText("");
+        }
+
+        public Label(string label, string defaultText) : this(label)
+        {
+            SetText(defaultText);
+        }
+
+        public void SetText(string text)
+        {
+            Text = _label + " " + text;
+        }
+
+        public void SetText(double d)
+        {
+            Text = _label + " " + d;
+        }
+
+        public void SetText(Vector relativeVelocity)
+        {
+            Text = _label + " " + relativeVelocity;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Gravity.Universe
         public void Rotate(int ticks)
         {
             _directionTicks += ticks;
-            Direction = new Vector(-Math.PI * _directionTicks / 100, 1);
+            Direction = new Vector(-Math.PI * _directionTicks / 200, 1);
         }
 
         public bool EngineFiring => _engineFiring;
