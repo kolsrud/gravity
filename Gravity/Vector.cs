@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 
 namespace Gravity
 {
     public class Vector
     {
-        public double Angle { get; }
+        public double Angle { get;  }
         public double Amplitude { get; }
-
         public double ComponentX => Amplitude * Math.Cos(Angle);
         public double ComponentY => Amplitude * Math.Sin(Angle);
 
@@ -54,11 +52,11 @@ namespace Gravity
             return vs.Aggregate(NullVector, Add);
         }
 
-        public override string ToString()
+        public string ToString(string unit)
         {
-            var v = Amplitude > 500 ? $"{Amplitude/1000:#0.00} km/s" : $"{Amplitude:#0.00} m/s";
+            var v = Amplitude > 500 ? $"{Amplitude/1000:#0.00} k" : $"{Amplitude:#0.00} ";
 
-            return $"{v}, θ: {(Angle / Math.PI):#0.00} π";
+            return $"{v}{unit}, θ: {(Angle / Math.PI):#0.00} π";
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Gravity.ViewModel
         private readonly MovingBody _m;
         public Position Position => _m.Position;
         public Vector Velocity => _m.Velocity;
+        public Vector Acceleration => _m.Acceleration;
 
         private const int SelectionCircleSize = 30;
 

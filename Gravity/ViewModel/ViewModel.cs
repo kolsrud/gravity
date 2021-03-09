@@ -16,6 +16,7 @@ namespace Gravity.ViewModel
         public Label TimeScaleText;
         public Label Distance;
         public Label Speed;
+        public Label Acceleration;
 
         public MovingBodyViewModel Center { get; private set; }
 
@@ -28,13 +29,15 @@ namespace Gravity.ViewModel
             ScaleText = new Label("Scale:");
             TimeScaleText = new Label("Time scale:");
             Distance = new Label("Distance:");
-            Speed = new Label("Δv:");
+            Speed = new Label("v:");
+            Acceleration = new Label("Δv:");
 
             AddToCanvas(canvas, SelectedBody, 0);
             AddToCanvas(canvas, ScaleText, 1);
             AddToCanvas(canvas, TimeScaleText, 2);
             AddToCanvas(canvas, Distance, 3);
             AddToCanvas(canvas, Speed, 4);
+            AddToCanvas(canvas, Acceleration, 5);
             foreach (var body in MovingBodies)
             {
                 body.AddToCanvas(canvas);
@@ -80,7 +83,8 @@ namespace Gravity.ViewModel
             ScaleText.SetText(scale);
             TimeScaleText.SetText(timeScale);
             Distance.SetText(FormatDistance(SpaceShipViewModels[0].Position.Distance(Center.Position)));
-            Speed.SetText(SpaceShipViewModels[0].RelativeVelocity(Center.Velocity));
+            Speed.SetText(SpaceShipViewModels[0].RelativeVelocity(Center.Velocity).ToString("m/s"));
+            Acceleration.SetText(SpaceShipViewModels[0].Acceleration.ToString("m/s²"));
             UpdatePositions(canvasCenter, scale);
             UpdateVectors();
         }

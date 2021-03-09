@@ -5,14 +5,12 @@ namespace Gravity.Universe
 {
     internal class SpaceShip : MovingBody
     {
-        public Vector Direction;
+        public Vector Direction = new Vector(0);
         private int _directionTicks = 0;
-
         private bool _engineFiring = false;
 
         public SpaceShip(string name, (double, double) position, (double, double) velocity) : base(name, new Position(position), new Vector(velocity))
         {
-            Direction = new Vector(0);
         }
 
         public void Rotate(int ticks)
@@ -34,7 +32,7 @@ namespace Gravity.Universe
         {
             if (_engineFiring)
             {
-                Velocity = Velocity.Add(Direction.Scale(10));
+                Velocity = Velocity.Add(Direction.Scale(BurnFactor));
             }
 
             base.Accelerate(timeScale, gravityWells);
