@@ -16,6 +16,15 @@ namespace Gravity.Universe
             Mass = mass;
             Color = color;
         }
+
+        public Planet(MovingBody relative, string name, double radius, double mass, (double, double) position, (double, double) velocity, SolidColorBrush color)
+            : base(relative, name, new Position(position), new Vector(velocity))
+        {
+            Radius = radius;
+            Mass = mass;
+            Color = color;
+        }
+
     }
 
 }

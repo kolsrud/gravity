@@ -19,6 +19,11 @@ namespace Gravity.Universe
             Acceleration = Vector.NullVector;
         }
 
+        internal MovingBody(MovingBody relative, string name, Position position, Vector velocity) :
+            this(name, position.Add(relative.Position), velocity.Add(relative.Velocity))
+        {
+        }
+
         public void Move(double timeScale)
         {
             var newP = Position.Add(Velocity.Scale(timeScale));
@@ -26,9 +31,12 @@ namespace Gravity.Universe
             Position.Y = newP.Y;
         }
 
-        public virtual void Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
+        public virtual Vector BaseAcceleration => Vector.NullVector;
+
+        public void Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
         {
-            Acceleration = Vector.Add(gravityWells.Where(well => well.Position != Position).Select(Accelerate));
+            Acceleration = gravityWells.Where(well => well.Position != Position).Select(Accelerate)
+                .Aggregate(BaseAcceleration, Vector.Add);
             Velocity = Velocity.Add(Acceleration.Scale(timeScale));
         }
 

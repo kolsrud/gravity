@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Gravity.Universe
 {
@@ -10,6 +9,11 @@ namespace Gravity.Universe
         private bool _engineFiring = false;
 
         public SpaceShip(string name, (double, double) position, (double, double) velocity) : base(name, new Position(position), new Vector(velocity))
+        {
+        }
+
+        public SpaceShip(MovingBody relative, string name, (double, double) position, (double, double) velocity) :
+            base(relative, name, new Position(position), new Vector(velocity))
         {
         }
 
@@ -26,16 +30,8 @@ namespace Gravity.Universe
             _engineFiring = status;
         }
 
-        private const int BurnFactor = 10;
+        private const double BurnFactor = 0.1;
 
-        public override void Accelerate(double timeScale, List<(Position Position, double Mass)> gravityWells)
-        {
-            if (_engineFiring)
-            {
-                Velocity = Velocity.Add(Direction.Scale(BurnFactor));
-            }
-
-            base.Accelerate(timeScale, gravityWells);
-        }
+        public override Vector BaseAcceleration => _engineFiring ? Direction.Scale(BurnFactor) : Vector.NullVector;
     }
 }

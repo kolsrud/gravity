@@ -54,24 +54,25 @@ namespace Gravity
         public static double Scale = 1_500_000; // 1 pixel = x m
 
         // public static double Scale = 750_000; // 1 pixel = x m
-        public static double TimeScale = 60 * 5; // seconds
+        public static double TimeScale = 60 * 5; // time factor
 
         private Position GetCanvasCenter()
         {
             return new Position(Canvas.ActualWidth / 2, Canvas.ActualHeight / 2);
         }
 
+        private const int TicksPerSecond = 500;
         private void Canvas_OnLoaded(object sender, RoutedEventArgs e)
         {
             ViewModel.Initialize(Scale, Canvas, Universe);
             TickGui(this);
-            _timer = new Timer(Tick, this, 0, 1000 / 500);
+            _timer = new Timer(Tick, this, 0, 1000 / TicksPerSecond);
             _guiTimer = new Timer(TickGui, this, 0, 1000 / 50);
         }
 
         public void Step()
         {
-            Universe.Step(TimeScale);
+            Universe.Step(TimeScale/500);
         }
 
         private void SetPosition()
